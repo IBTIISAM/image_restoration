@@ -10,7 +10,7 @@ const Navbar = () => {
     return(
         <div className="sm:flex  sm:justify-between py-3 px-4 border-b w-full">
              <div className="flex px-4  ">
-                <Image src="/logo3.png"width={40} height={80} alt="logo image" />            
+                <Image  className="" src="/logo3.png"width={40} height={80} alt="logo image" />            
                 <Link href="/" className="border-r h-full">
                     <h1 className="text-xl font-sans font-bold mt-2 mx-2 leading-none pr-3" >HitPaw</h1>
                  </Link>
