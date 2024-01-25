@@ -10,7 +10,8 @@ import io
 from starlette.responses import StreamingResponse
 import requests
 from io import StringIO
-
+from textbsr_ import textbsr_func
+from codeformer_ import codeformer_infer
 app = FastAPI()
 
 '''
@@ -68,18 +69,37 @@ async def upload_image(file: UploadFile = File(...)):
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
    #return {"file_name": file.filename}    
 '''
-
-@app.post("/uploadImg")
+@app.post("/textbsr")
 async def upload_image(file: UploadFile = File(...)):
     # save the image
-    with open (f'{file.filename}', "wb") as buffer:
+    with open (f'./images/{file.filename}', "wb") as buffer:
         shutil.copyfileobj(file.file , buffer)  
 
     # read the image locally    
-    image = cv2.imread(file.filename)
-
+    #image = cv2.imread(file.filename)
+    image, e_image_name = textbsr_func(file.filename)
+   
     # make an image response 
     res, im_png = cv2.imencode(".png", image)
-    os.remove(file.filename) #delete img 
+    #os.remove("./images/"+file.filename) #delete img 
+    #os.remove("./textbsr_output/"+e_image_name) #delete e img 
+   
+    return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
+   
+
+@app.post("/facebfr")
+async def upload_image(file: UploadFile = File(...)):
+    # save the image
+    with open (f'./images/{file.filename}', "wb") as buffer:
+        shutil.copyfileobj(file.file , buffer)  
+
+    # read the image locally    
+    #image = cv2.imread(file.filename)
+    face_image = codeformer_infer(file.filename)
+    # make an image response 
+    res, im_png = cv2.imencode(".png", face_image)
+    #os.remove("./images/"+file.filename) #delete img 
+   #os.remove("./textbsr_output/"+e_image_name) #delete e img 
+    #os.remove("./output/out.png") #delete e img 
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
    
